@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jlleitschuh.gradle.ktlint'
     id 'kotlin-parcelize'
 }
 
@@ -56,6 +57,9 @@ android {
             println(versionInfo)
             println("**************************************************")
         }
+    }
+    lintOptions {
+        lintConfig file("../config/lint.xml")
     }
     buildFeatures {
         viewBinding true

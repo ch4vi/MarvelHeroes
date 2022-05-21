@@ -1,0 +1,35 @@
+<lint>
+    <issue id="InvalidPackage">
+        <ignore path="**/logback*/*.*"/>
+        <ignore path="*/org.jacoco.agent/*"/>
+        <ignore path="*/org.mockito/*"/>
+        <ignore path="*/bcpkix-jdk15on/*"/>
+        <ignore path="*/edu.ucar/*"/>
+        <ignore path="*/com.github.mhshams/*"/>
+    </issue>
+    <issue id="UnusedIds" severity="ignore" />
+    <issue id="UnusedResources" severity="ignore" />
+    <issue id="Overdraw" severity="ignore" />
+    <issue id="IconMissingDensityFolder" severity="ignore" />
+    <issue id="VectorPath" severity="ignore" />
+    <issue id="Typos" severity="ignore" />
+    <issue id="TypographyDashes" severity="ignore" />
+    <issue id="MissingTranslation" severity="ignore" />
+    <issue id="LockedOrientationActivity" severity="ignore" />
+    <issue id="DuplicateStrings" severity="ignore" />
+    <issue id="PluralsCandidate" severity="ignore" />
+    <issue id="VectorRaster" severity="ignore" />
+    <issue id="ConvertToWebp" severity="ignore"/>
+    <issue id="NonResizeableActivity" severity="ignore"/>
+    <issue id="IconLauncherShape" severity="ignore"/>
+    <issue id="IconExpectedSize" severity="ignore"/>
+    <issue id="MergeRootFrame" severity="ignore"/>
+    <issue id="SyntheticAccessor" severity="ignore"/>
+    <issue id="IconDensities" severity="ignore"/>
+    <issue id="IconDuplicates" severity="ignore"/>
+    <issue id="ViewConstructor" severity="ignore"/>
+    <issue id="Instantiatable" severity="ignore"/>
+    <issue id="CustomSplashScreen" severity="ignore"/>
+    <issue id="MediaCapabilities" severity="ignore"/>
+    <issue id="TrustAllX509TrustManager" severity="ignore"/>
+</lint>
