@@ -1,0 +1,91 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-parcelize'
+}
+
+def STRING = "String"
+def appName = "Marvel Heroes"
+
+android {
+    compileSdk 32
+
+    defaultConfig {
+        applicationId "com.xavi.marvelheroes"
+        minSdkVersion rootProject.ext.sdk.min
+        targetSdkVersion rootProject.ext.sdk.target
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            testCoverageEnabled true
+            debuggable true
+
+            resValue "string", "app_label", "[D] ${appName}"
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            resValue "string", "app_label", appName
+        }
+    }
+    applicationVariants.all { variant ->
+        outputs.all { output ->
+            println("**************************************************")
+            println("------------- ${variant.buildType.name} -------------")
+
+            def outputName = "${appName}-${output.variantOutput.fullName}-${defaultConfig.versionName}.apk"
+            if (variant.buildType.name == "debug") {
+                outputName = "${appName}-${output.variantOutput.fullName}-${defaultConfig.versionCode}.apk"
+            }
+            output.outputFileName = outputName
+            println(outputName)
+
+            def versionInfo = "v${defaultConfig.versionName}"
+            if (variant.buildType.name == "debug") {
+                versionInfo = "v${defaultConfig.versionName}.${defaultConfig.versionCode} - ${output.variantOutput.fullName}"
+            }
+            variant.buildConfigField(STRING, "VERSION_INFO", "\"${versionInfo}\"")
+            println(versionInfo)
+            println("**************************************************")
+        }
+    }
+    buildFeatures {
+        viewBinding true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.7.0-alpha01'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.2'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.4.2'
+
+    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation "io.insert-koin:koin-android:3.1.6"
+    implementation "io.coil-kt:coil:2.0.0-rc03"
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}
