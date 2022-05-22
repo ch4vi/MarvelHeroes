@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master,develop ]
+  pull_request:
+    branches: [ master,develop ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: env
+        run: |
+          env
+          pwd
+
+      - name: linter
+        run: |
+          ./gradlew lintDebug
+          ./gradlew detektDebug
+          ./gradlew clean app:compileDebugSources
+          ./gradlew ktlintCheck
