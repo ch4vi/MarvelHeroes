@@ -29,3 +29,18 @@ jobs:
           ./gradlew detektDebug
           ./gradlew clean app:compileDebugSources
           ./gradlew ktlintCheck
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: env
+        run: |
+          env
+          pwd
+
+      - name: unit_test
+        run: |
+          ./gradlew clean :app:testDebugUnitTest
