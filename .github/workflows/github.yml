@@ -2,8 +2,8 @@ name: CI
 
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
-  push:
-    branches: [ master,develop ]
+  # push:
+  # branches: [ master,develop,feature/* ]
   pull_request:
     branches: [ master,develop ]
 
@@ -29,3 +29,18 @@ jobs:
           ./gradlew detektDebug
           ./gradlew clean app:compileDebugSources
           ./gradlew ktlintCheck
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: env
+        run: |
+          env
+          pwd
+
+      - name: unit_test
+        run: |
+          ./gradlew clean :app:testDebugUnitTest
