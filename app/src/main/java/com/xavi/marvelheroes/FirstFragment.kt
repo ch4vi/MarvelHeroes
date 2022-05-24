@@ -5,8 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.xavi.marvelheroes.databinding.FragmentFirstBinding
+import com.xavi.marvelheroes.domain.model.CharactersDomainModel
+import com.xavi.marvelheroes.presentation.TestEvent
+import com.xavi.marvelheroes.presentation.TestViewModel
+import com.xavi.marvelheroes.presentation.TestViewState
+import com.xavi.marvelheroes.presentation.utils.EventObserver
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -14,6 +20,7 @@ import com.xavi.marvelheroes.databinding.FragmentFirstBinding
 class FirstFragment : Fragment() {
 
     private var binding: FragmentFirstBinding? = null
+    private val viewModel: TestViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,10 +35,38 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeViewModel()
+        initUI()
+        dispatchGetData()
+    }
 
-        binding?.buttonFirst?.setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+    private fun initUI() {
+        binding?.apply {
+            buttonFirst.setOnClickListener {
+//            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+                dispatchGetData()
+            }
         }
+    }
+
+    private fun observeViewModel() {
+        viewModel.viewState.observe(viewLifecycleOwner, EventObserver { resolveState(it) })
+    }
+
+    private fun dispatchGetData() {
+        viewModel.dispatch(TestEvent.GetCharacters)
+    }
+
+    private fun resolveState(state: TestViewState) {
+        when (state) {
+            TestViewState.Loading -> Unit // showProgressBar(true)
+            is TestViewState.OnFailure -> Unit // showError()
+            is TestViewState.ShowData -> showData(state.data)
+        }
+    }
+
+    private fun showData(data: CharactersDomainModel) {
+        Timber.d("${data.characters.size}")
     }
 
     override fun onDestroyView() {
