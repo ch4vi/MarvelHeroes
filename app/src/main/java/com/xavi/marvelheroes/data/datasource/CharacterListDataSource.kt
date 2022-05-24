@@ -20,9 +20,9 @@ import com.xavi.marvelheroes.domain.utils.State
 import retrofit2.Retrofit
 
 // region Repository
+
 class CharacterRepositoryImp(
     dataSource: CharacterListDataSource,
-//    cache: TimedCache,
     private val mapper: Mapper<CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>
 ) : CharacterRepository,
     RetrofitRepository<CharacterListService, CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>(
@@ -33,27 +33,31 @@ class CharacterRepositoryImp(
         return fetch(CharacterListPredicate(mapper))
     }
 }
+
 // endregion
 
 // region DataSource
+
 abstract class CharacterListDataSource(
     client: NetworkClient<Retrofit>
 ) : RetrofitDataSource<CharacterListService, CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>(
     client
 ) {
-    abstract suspend fun getInvestmentDashboard(predicate: CharacterListPredicate): State<CharactersDomainModel>
+    abstract suspend fun getCharacterList(predicate: CharacterListPredicate): State<CharactersDomainModel>
 }
 
 class CharacterListDataSourceImpl(
     client: NetworkClient<Retrofit>
 ) : CharacterListDataSource(client) {
-    override suspend fun getInvestmentDashboard(predicate: CharacterListPredicate): State<CharactersDomainModel> {
+    override suspend fun getCharacterList(predicate: CharacterListPredicate): State<CharactersDomainModel> {
         return fetch(predicate)
     }
 }
+
 // endregion
 
 // region Predicate
+
 class CharacterListPredicate(
     private val mapper: Mapper<CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>
 ) : RetrofitPredicate<CharacterListService, CharactersDomainModel, MarvelResponseDTO<CharacterDTO>> {
@@ -64,6 +68,7 @@ class CharacterListPredicate(
         it.characters(ts = auth.ts, hash = auth.hash, apikey = auth.apikey)
     }
 }
+
 // endregion
 
 // region Mapper
