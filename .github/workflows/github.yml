@@ -22,7 +22,6 @@ jobs:
         run: |
           env
           pwd
-          touch local.properties
 
       - name: linter
         run: |
