@@ -24,8 +24,8 @@ android {
 
         Properties properties = new Properties()
         properties.load(project.rootProject.file('local.properties').newDataInputStream())
-        def publicKey = properties.getProperty('marvel.pub')
-        def privateKey = properties.getProperty('marvel.pri')
+        def publicKey = properties.getProperty('marvel.pub', "")
+        def privateKey = properties.getProperty('marvel.pri', "")
 
         buildConfigField STRING, "BASE_URL", "\"https://gateway.marvel.com/v1/public/\""
         buildConfigField STRING, "KEY_PUBLIC", publicKey
