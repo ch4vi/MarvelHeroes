@@ -9,8 +9,10 @@ interface CharacterListService {
 
     @GET(MarvelAPI.Character.path)
     suspend fun characters(
+        @Query("limit") limit: Int,
+        @Query("offset") offset: Int,
         @Query("ts") ts: String,
         @Query("hash") hash: String,
-        @Query("apikey") apikey: String?
+        @Query("apikey") apikey: String?,
     ): MarvelResponseDTO<CharacterDTO>
 }

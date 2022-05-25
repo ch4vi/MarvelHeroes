@@ -1,16 +1,14 @@
 package com.xavi.marvelheroes.domain.utils
 
-open class Repository<Client, T, R, P>(
-    private val dataSource: DataSource<Client, T, R, P>,
-) where
+import androidx.paging.PagingConfig
+import com.xavi.marvelheroes.domain.model.PageDomainModel
+
+interface Repository<T, R, P> where
 R : DTO,
-P : Predicate<T, R> {
+P : Predicate<T, R>
 
-    suspend fun fetch(predicate: P): State<T> {
-        return fetchFromNetwork(predicate)
-    }
-
-    private suspend fun fetchFromNetwork(predicate: P): State<T> {
-        return dataSource.fetch(predicate)
+interface PagedRepository {
+    fun getDefaultPageConfig(): PagingConfig {
+        return PagingConfig(pageSize = PageDomainModel.LIMIT, enablePlaceholders = true)
     }
 }

@@ -1,5 +1,6 @@
 package com.xavi.marvelheroes.data.api
 
+import androidx.paging.PagingSource
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
@@ -10,22 +11,23 @@ import com.xavi.marvelheroes.BuildConfig.BASE_URL
 import com.xavi.marvelheroes.BuildConfig.NETWORK_LOGGING
 import com.xavi.marvelheroes.domain.model.ErrorDomainModel
 import com.xavi.marvelheroes.domain.model.Failure
+import com.xavi.marvelheroes.domain.model.PageDomainModel
 import com.xavi.marvelheroes.domain.utils.DTO
 import com.xavi.marvelheroes.domain.utils.DataSource
 import com.xavi.marvelheroes.domain.utils.NetworkClient
 import com.xavi.marvelheroes.domain.utils.Predicate
 import com.xavi.marvelheroes.domain.utils.Repository
 import com.xavi.marvelheroes.domain.utils.State
+import java.net.ConnectException
+import java.net.UnknownHostException
+import java.util.Date
+import java.util.concurrent.TimeUnit
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import java.net.ConnectException
-import java.net.UnknownHostException
-import java.util.Date
-import java.util.concurrent.TimeUnit
 
 // region Client
 
@@ -73,23 +75,19 @@ class RetrofitConfiguration : NetworkClient<Retrofit> {
 
 // region Repository
 
-abstract class RetrofitRepository<API, T, R : DTO>(
-    dataSource: DataSource<Retrofit, T, R, RetrofitPredicate<API, T, R>>,
-//    cache: TimedCache
-) : Repository<Retrofit, T, R, RetrofitPredicate<API, T, R>>(dataSource)
+interface RetrofitRepository<API, T, R : DTO> : Repository<T, R, RetrofitPagedPredicate<API, T, R>>
 
 // endregion
 
 // region DataSource
 
-open class RetrofitDataSource<API, T, R : DTO>(
-    client: NetworkClient<Retrofit>
-) : DataSource<Retrofit, T, R, RetrofitPredicate<API, T, R>>(client) {
+abstract class RetrofitPagedSource<API, LIST : Any, T, R : DTO> :
+    PagingSource<PageDomainModel, LIST>(),
+    DataSource<Retrofit, T, R, RetrofitPagedPredicate<API, T, R>> {
 
-    @Suppress("TooGenericExceptionCaught")
-    override suspend fun fetch(predicate: RetrofitPredicate<API, T, R>): State<T> {
+    override suspend fun fetch(predicate: RetrofitPagedPredicate<API, T, R>): State<T> {
         return try {
-            val service = client.create(predicate.service())
+            val service = networkClient.client().create(predicate.service())
             val endpoint = predicate.endpoint()
             val dto = endpoint(service)
             State.Success(predicate.mapper().map(dto))
@@ -104,7 +102,6 @@ open class RetrofitDataSource<API, T, R : DTO>(
         }
     }
 
-    @Suppress("SwallowedException")
     private fun handlerHttpException(e: HttpException): Throwable {
         return try {
             val moshi = Moshi.Builder().build()
@@ -113,21 +110,34 @@ open class RetrofitDataSource<API, T, R : DTO>(
                 adapter.fromJson(it)
             }
             return error?.let {
-                errorHandler(it)
+                Failure.ResponseError(it)
             } ?: Failure.Unexpected(e.message())
         } catch (ex: JsonDataException) {
             Failure.MalformedError(e.response()?.errorBody()?.string())
         }
     }
+
 }
 
 // endregion
 
 // region Predicate
 
-interface RetrofitPredicate<API, T, R : DTO> : Predicate<T, R> {
+interface RetrofitPagedPredicate<API, T, R : DTO> : Predicate<T, R> {
     fun service(): Class<API>
     fun endpoint(): suspend (API) -> R
+
+    fun previous(current: PageDomainModel): PageDomainModel? {
+        return if (current.offset == PageDomainModel.OFFSET) null
+        else current.copy(
+            offset = Integer.max(current.offset - current.limit, PageDomainModel.OFFSET)
+        )
+    }
+
+    fun next(current: PageDomainModel): PageDomainModel? {
+        return if (current.offset == current.total) null
+        else current.copy(offset = Integer.min(current.offset + current.limit, current.total))
+    }
 }
 
 // endregion
