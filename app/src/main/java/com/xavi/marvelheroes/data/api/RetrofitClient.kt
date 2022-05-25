@@ -85,6 +85,7 @@ abstract class RetrofitPagedSource<API, LIST : Any, T, R : DTO> :
     PagingSource<PageDomainModel, LIST>(),
     DataSource<Retrofit, T, R, RetrofitPagedPredicate<API, T, R>> {
 
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun fetch(predicate: RetrofitPagedPredicate<API, T, R>): State<T> {
         return try {
             val service = networkClient.client().create(predicate.service())
@@ -102,6 +103,7 @@ abstract class RetrofitPagedSource<API, LIST : Any, T, R : DTO> :
         }
     }
 
+    @Suppress("SwallowedException")
     private fun handlerHttpException(e: HttpException): Throwable {
         return try {
             val moshi = Moshi.Builder().build()
@@ -116,7 +118,6 @@ abstract class RetrofitPagedSource<API, LIST : Any, T, R : DTO> :
             Failure.MalformedError(e.response()?.errorBody()?.string())
         }
     }
-
 }
 
 // endregion
