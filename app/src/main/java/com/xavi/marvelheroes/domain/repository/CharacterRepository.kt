@@ -1,8 +1,11 @@
 package com.xavi.marvelheroes.domain.repository
 
-import com.xavi.marvelheroes.domain.model.CharactersDomainModel
-import com.xavi.marvelheroes.domain.utils.State
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.xavi.marvelheroes.domain.model.CharacterDomainModel
+import com.xavi.marvelheroes.domain.utils.PagedRepository
+import kotlinx.coroutines.flow.Flow
 
-interface CharacterRepository {
-    suspend fun getCharacterList(): State<CharactersDomainModel>
+interface CharacterRepository : PagedRepository {
+    fun getCharacterList(pagingConfig: PagingConfig = getDefaultPageConfig()): Flow<PagingData<CharacterDomainModel>>
 }
