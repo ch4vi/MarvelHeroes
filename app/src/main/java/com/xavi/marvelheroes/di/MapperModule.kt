@@ -1,8 +1,8 @@
 package com.xavi.marvelheroes.di
 
-import com.xavi.marvelheroes.data.datasource.CharacterMapper
-import com.xavi.marvelheroes.data.datasource.CharactersMapper
-import com.xavi.marvelheroes.data.datasource.ThumbnailMapper
+import com.xavi.marvelheroes.data.mapper.CharacterMapper
+import com.xavi.marvelheroes.data.mapper.CharactersMapper
+import com.xavi.marvelheroes.data.mapper.ThumbnailMapper
 import com.xavi.marvelheroes.data.model.CharacterDTO
 import com.xavi.marvelheroes.data.model.MarvelResponseDTO
 import com.xavi.marvelheroes.data.model.ThumbnailDTO
