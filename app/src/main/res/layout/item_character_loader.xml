@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <Space
+        android:id="@+id/item_loader_placeholder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/space_m"
+        android:layout_marginVertical="@dimen/space_s"
+        app:layout_constraintDimensionRatio="H,3:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_loader_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/space_m"
+        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/item_loader_retry"
+        app:layout_constraintEnd_toEndOf="@id/item_loader_placeholder"
+        app:layout_constraintStart_toStartOf="@id/item_loader_placeholder"
+        app:layout_constraintTop_toTopOf="@id/item_loader_placeholder"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="placeholder"
+        tools:textColor="@color/black" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/item_loader_retry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_global_retry"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/item_loader_placeholder"
+        app:layout_constraintStart_toStartOf="@id/item_loader_placeholder"
+        app:layout_constraintTop_toBottomOf="@id/item_loader_message" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/item_loader_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:layout_constraintBottom_toBottomOf="@id/item_loader_placeholder"
+        app:layout_constraintEnd_toEndOf="@id/item_loader_placeholder"
+        app:layout_constraintStart_toStartOf="@id/item_loader_placeholder"
+        app:layout_constraintTop_toTopOf="@id/item_loader_placeholder" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/item_loader_error_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="item_loader_retry,item_loader_message" />
+</androidx.constraintlayout.widget.ConstraintLayout>
