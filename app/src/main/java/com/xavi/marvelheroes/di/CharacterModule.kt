@@ -5,7 +5,7 @@ import com.xavi.marvelheroes.data.datasource.CharacterRepositoryImp
 import com.xavi.marvelheroes.data.mapper.CharactersMapper
 import com.xavi.marvelheroes.domain.repository.CharacterRepository
 import com.xavi.marvelheroes.domain.usecase.GetCharacterList
-import com.xavi.marvelheroes.presentation.TestViewModel
+import com.xavi.marvelheroes.presentation.CharacterListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -21,5 +21,5 @@ val characterListModule = module {
 
     single { GetCharacterList(repository = get()) }
 
-    viewModel { TestViewModel(getCharacterList = get()) }
+    viewModel { CharacterListViewModel(getCharacterList = get()) }
 }
