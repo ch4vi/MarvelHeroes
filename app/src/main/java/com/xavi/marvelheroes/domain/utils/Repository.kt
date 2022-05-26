@@ -8,7 +8,6 @@ R : DTO,
 P : Predicate<T, R>
 
 interface PagedRepository {
-    fun getDefaultPageConfig(): PagingConfig {
-        return PagingConfig(pageSize = PageDomainModel.LIMIT, enablePlaceholders = true)
-    }
+    fun getDefaultPageConfig() =
+        PagingConfig(pageSize = PageDomainModel.LIMIT, enablePlaceholders = true)
 }
