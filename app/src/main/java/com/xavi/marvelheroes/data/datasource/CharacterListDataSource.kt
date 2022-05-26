@@ -44,15 +44,17 @@ class CharacterListDataSource(
     client: NetworkClient<Retrofit>,
     private val mapper: Mapper<CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>,
 ) : RetrofitPagedSource<
-    CharacterListService,
-    CharacterDomainModel,
-    CharactersDomainModel,
-    MarvelResponseDTO<CharacterDTO>>() {
+        CharacterListService,
+        CharacterDomainModel,
+        CharactersDomainModel,
+        MarvelResponseDTO<CharacterDTO>>() {
 
     override val networkClient = client
 
     override fun getRefreshKey(state: PagingState<PageDomainModel, CharacterDomainModel>): PageDomainModel? {
-        return null
+        return state.anchorPosition?.let {
+            PageDomainModel(offset = it, limit = state.config.pageSize, 0, 0)
+        }
     }
 
     override suspend fun load(params: LoadParams<PageDomainModel>): LoadResult<PageDomainModel, CharacterDomainModel> {
