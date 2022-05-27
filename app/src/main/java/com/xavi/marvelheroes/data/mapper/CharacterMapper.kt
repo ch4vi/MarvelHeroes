@@ -17,7 +17,12 @@ class CharacterMapper(
     override fun map(dto: CharacterDTO): CharacterDomainModel {
         val id = dto.id ?: throw IllegalArgumentException("id")
         val thumbnail = mapThumbnail(dto.thumbnail)
-        return CharacterDomainModel(id = id, name = dto.name, thumbnail = thumbnail)
+        return CharacterDomainModel(
+            id = id,
+            name = dto.name,
+            description = dto.description,
+            thumbnail = thumbnail
+        )
     }
 
     @Suppress("SwallowedException")

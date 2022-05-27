@@ -1,11 +1,15 @@
 package com.xavi.marvelheroes.ui
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import coil.load
+import coil.size.Scale
 import com.google.android.material.snackbar.Snackbar
 import com.xavi.marvelheroes.R
 import com.xavi.marvelheroes.databinding.FragmentCharacterDetailBinding
@@ -44,7 +48,16 @@ class CharacterDetailFragment : Fragment() {
     }
 
     private fun initUI(character: CharacterDomainModel) {
+        binding?.apply {
+            detailCharacterThumbnail.load(character.thumbnail?.url) {
+                placeholder(R.drawable.placeholder_character)
+                error(ColorDrawable(Color.RED))
+                scale(Scale.FILL)
+            }
 
+            detailCharacterName.text = character.name
+            detailCharacterDescription.text = character.description
+        }
     }
 
     private fun showFailure(f: Throwable) {

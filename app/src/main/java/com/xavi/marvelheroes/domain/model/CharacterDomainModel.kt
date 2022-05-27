@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class CharacterDomainModel(
     val id: String,
     val name: String?,
+    val description: String?,
     val thumbnail: ThumbnailDomainModel?
 ): Parcelable
 

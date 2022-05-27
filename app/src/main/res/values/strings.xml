@@ -14,4 +14,7 @@
     <string name="app_search_hint">Search</string>
     <string name="app_search_description">search character by name</string>
     <string name="app_item_character_image_description">search character by name</string>
+
+    <!--   Detail -->
+    <string name="app_detail_description">Description</string>
 </resources>
