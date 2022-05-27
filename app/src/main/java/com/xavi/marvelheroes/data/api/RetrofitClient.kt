@@ -18,16 +18,16 @@ import com.xavi.marvelheroes.domain.utils.NetworkClient
 import com.xavi.marvelheroes.domain.utils.Predicate
 import com.xavi.marvelheroes.domain.utils.Repository
 import com.xavi.marvelheroes.domain.utils.State
-import java.net.ConnectException
-import java.net.UnknownHostException
-import java.util.Date
-import java.util.concurrent.TimeUnit
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.net.ConnectException
+import java.net.UnknownHostException
+import java.util.Date
+import java.util.concurrent.TimeUnit
 
 // region Client
 

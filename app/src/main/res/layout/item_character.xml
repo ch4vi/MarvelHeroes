@@ -12,19 +12,20 @@
         android:layout_marginHorizontal="@dimen/space_m"
         android:layout_marginVertical="@dimen/space_s"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/app_item_character_image_description"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="H,2:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="@color/design_default_color_error"
-        tools:ignore="ContentDescription" />
+        tools:background="@color/design_default_color_error" />
 
     <ImageView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/app_global_empty_description"
         android:src="@drawable/shadow_character_name"
         app:layout_constraintBottom_toBottomOf="@id/item_character_preview"
         app:layout_constraintEnd_toEndOf="@id/item_character_preview"

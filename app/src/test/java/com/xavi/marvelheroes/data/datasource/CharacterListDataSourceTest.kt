@@ -60,7 +60,8 @@ class CharacterListDataSourceTest : AutoCloseKoinTest() {
             )
         )
         assertEquals(
-            expectedResult, sut.load(
+            expectedResult,
+            sut.load(
                 PagingSource.LoadParams.Refresh(
                     key = null,
                     loadSize = 2,
@@ -80,7 +81,8 @@ class CharacterListDataSourceTest : AutoCloseKoinTest() {
                 Failure.Unexpected(error.message)
             )
         assertEquals(
-            expectedResult, sut.load(
+            expectedResult,
+            sut.load(
                 PagingSource.LoadParams.Refresh(
                     key = null,
                     loadSize = 1,

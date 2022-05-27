@@ -36,7 +36,7 @@ class CharactersAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         getItem(position)?.let {
-            (holder as? CharacterViewHolder)?.bind(item = it, position, onItemClickListener)
+            (holder as? CharacterViewHolder)?.bind(item = it, onItemClickListener)
         }
     }
 
@@ -52,8 +52,8 @@ class CharactersAdapter(
 
         fun bind(
             item: CharacterDomainModel,
-            position: Int,
-            onItemClickListener: (CharacterDomainModel) -> Unit) {
+            onItemClickListener: (CharacterDomainModel) -> Unit
+        ) {
             item.thumbnail?.url?.let {
                 val dimen = binding.root.context.resources.getDimension(R.dimen.space_s)
                 binding.itemCharacterPreview.load(it) {

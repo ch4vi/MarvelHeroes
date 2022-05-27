@@ -44,10 +44,10 @@ class CharacterListDataSource(
     client: NetworkClient<Retrofit>,
     private val mapper: Mapper<CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>,
 ) : RetrofitPagedSource<
-        CharacterListService,
-        CharacterDomainModel,
-        CharactersDomainModel,
-        MarvelResponseDTO<CharacterDTO>>() {
+    CharacterListService,
+    CharacterDomainModel,
+    CharactersDomainModel,
+    MarvelResponseDTO<CharacterDTO>>() {
 
     override val networkClient = client
 
