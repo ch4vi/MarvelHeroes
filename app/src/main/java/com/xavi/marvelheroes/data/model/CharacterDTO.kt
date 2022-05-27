@@ -8,5 +8,6 @@ import com.xavi.marvelheroes.domain.utils.DTO
 data class CharacterDTO(
     @Json(name = "id") val id: String?,
     @Json(name = "name") val name: String?,
+    @Json(name = "description") val description: String?,
     @Json(name = "thumbnail") val thumbnail: ThumbnailDTO?
 ) : DTO

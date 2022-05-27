@@ -4,18 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import com.google.android.material.snackbar.Snackbar
 import com.xavi.marvelheroes.R
-import com.xavi.marvelheroes.databinding.FragmentListCharacterBinding
+import com.xavi.marvelheroes.databinding.FragmentCharacterListBinding
 import com.xavi.marvelheroes.domain.model.CharacterDomainModel
 import com.xavi.marvelheroes.presentation.CharacterListEvent
 import com.xavi.marvelheroes.presentation.CharacterListViewModel
 import com.xavi.marvelheroes.presentation.CharacterListViewState
 import com.xavi.marvelheroes.presentation.utils.EventObserver
+import com.xavi.marvelheroes.ui.CharacterDetailFragment.Companion.ARG_CHARACTER
 import com.xavi.marvelheroes.ui.adapter.CharactersAdapter
 import com.xavi.marvelheroes.ui.adapter.CharactersLoaderAdapter
 import kotlinx.coroutines.launch
@@ -24,7 +27,7 @@ import timber.log.Timber
 
 class CharacterListFragment : Fragment() {
 
-    private var binding: FragmentListCharacterBinding? = null
+    private var binding: FragmentCharacterListBinding? = null
     private val viewModel: CharacterListViewModel by viewModel()
 
     private lateinit var charactersAdapter: CharactersAdapter
@@ -34,11 +37,14 @@ class CharacterListFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = binding?.root ?: with(
-        FragmentListCharacterBinding.inflate(inflater, container, false)
-    ) {
-        binding = this
-        root
+    ): View {
+        return (
+            binding ?: run {
+                val binding = FragmentCharacterListBinding.inflate(layoutInflater)
+                this.binding = binding
+                binding
+            }
+            ).root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,7 +63,7 @@ class CharacterListFragment : Fragment() {
 
     private fun initUI() {
         binding?.apply {
-            charactersAdapter = CharactersAdapter()
+            charactersAdapter = CharactersAdapter { goToDetail(it) }
             loaderAdapter = CharactersLoaderAdapter { charactersAdapter.retry() }
             charactersAdapter.addLoadStateListener {
                 when (val loadState = it.refresh) {
@@ -83,6 +89,13 @@ class CharacterListFragment : Fragment() {
 
     private fun dispatchGetData() {
         viewModel.dispatch(CharacterListEvent.GetCharacters)
+    }
+
+    private fun goToDetail(character: CharacterDomainModel) {
+        findNavController().navigate(
+            R.id.action_to_character_detail,
+            bundleOf(ARG_CHARACTER to character)
+        )
     }
 
     private fun onFailure(t: Throwable) {

@@ -26,7 +26,7 @@
         android:layout_height="0dp"
         android:adjustViewBounds="true"
         android:contentDescription="@string/app_global_empty_description"
-        android:src="@drawable/shadow_character_name"
+        android:src="@drawable/shadow_character_name_radius"
         app:layout_constraintBottom_toBottomOf="@id/item_character_preview"
         app:layout_constraintEnd_toEndOf="@id/item_character_preview"
         app:layout_constraintStart_toStartOf="@id/item_character_preview"
@@ -40,10 +40,10 @@
         android:paddingVertical="2dp"
         android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
         android:textColor="@color/white"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/item_character_preview"
         app:layout_constraintEnd_toEndOf="@id/item_character_preview"
         app:layout_constraintStart_toStartOf="@id/item_character_preview"
-        tools:ignore="HardcodedText"
         tools:text="Name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
