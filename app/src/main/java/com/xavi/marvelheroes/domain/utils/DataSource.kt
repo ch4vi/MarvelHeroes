@@ -3,13 +3,13 @@ package com.xavi.marvelheroes.domain.utils
 import com.xavi.marvelheroes.domain.model.ErrorDomainModel
 import com.xavi.marvelheroes.domain.model.Failure
 
-abstract class DataSource<Client, out T, R : DTO, in P>(networkClient: NetworkClient<Client>) {
+interface DataSource<Client, out T, R : DTO, in P> {
 
-    val client: Client = networkClient.client()
+    val networkClient: NetworkClient<Client>
 
-    abstract suspend fun fetch(predicate: P): State<T>
+    suspend fun fetch(predicate: P): State<T>
 
-    open fun errorHandler(e: ErrorDomainModel): Throwable {
+    fun errorHandler(e: ErrorDomainModel): Throwable {
         return Failure.ResponseError(e)
     }
 }

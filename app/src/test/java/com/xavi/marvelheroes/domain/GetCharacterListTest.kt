@@ -1,18 +1,22 @@
 package com.xavi.marvelheroes.domain
 
-import com.xavi.marvelheroes.constants.charactersList
+import androidx.paging.PagingData
+import com.xavi.marvelheroes.domain.model.CharacterDomainModel
 import com.xavi.marvelheroes.domain.model.Failure
 import com.xavi.marvelheroes.domain.repository.CharacterRepository
 import com.xavi.marvelheroes.domain.usecase.GetCharacterList
-import com.xavi.marvelheroes.domain.utils.State
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.verify
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import kotlin.test.assertEquals
 
 class GetCharacterListTest {
     private lateinit var useCase: GetCharacterList
@@ -27,20 +31,23 @@ class GetCharacterListTest {
     }
 
     @Test
-    fun `GIVEN GetCharacterList WHEN dataSource returns Success THEN emit callback`() {
-        val expected = charactersList
+    fun `GIVEN GetCharacterList WHEN repository returns Success THEN returns data`() {
+        val expected: Flow<PagingData<CharacterDomainModel>> =
+            flow { emit(PagingData.from(emptyList())) }
 
-        coEvery { repository.getCharacterList() } returns State.Success(expected)
+        coEvery { repository.getCharacterList(any()) } returns expected
 
         runBlocking {
-            val output = useCase(Unit).first()
-            assertEquals(expected.page.count, output.page.count)
-            assertEquals(expected.characters.size, output.characters.size)
+            val output = useCase(Unit)
+            output.first()
+
+            verify { repository.getCharacterList(any()) }
+            assertEquals(1, output.count())
         }
     }
 
     @Test(expected = Throwable::class)
-    fun `GIVEN GetCharacterList WHEN dataSource returns Failure THEN throw exception`() {
+    fun `GIVEN GetCharacterList WHEN repository returns Failure THEN throw exception`() {
         val exception = Failure.Unexpected()
 
         coEvery { repository.getCharacterList() } throws exception

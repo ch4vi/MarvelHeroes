@@ -7,9 +7,8 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.xavi.marvelheroes.FirstFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        android:name="com.xavi.marvelheroes.ui.CharacterListFragment"
+        tools:layout="@layout/fragment_list_character">
 
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
@@ -17,8 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.xavi.marvelheroes.SecondFragment"
-        android:label="@string/second_fragment_label"
+        android:name="com.xavi.marvelheroes.ui.SecondFragment"
         tools:layout="@layout/fragment_second">
 
         <action

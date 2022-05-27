@@ -338,6 +338,26 @@ val marvelResponseDTOResponse = """
                             "url": "http://marvel.com/comics/characters/1017100/a-bomb_has?utm_campaign=apiRef&utm_source=72d5203a7262f71bed81d37b3e63e76f"
                         }
                     ]
+                },
+                {
+                    "name": "3-D Man",
+                    "description": "",
+                    "modified": "2014-04-29T14:18:17-0400",
+                    "thumbnail": {
+                        "path": "http://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784",
+                        "extension": "jpg"
+                    },
+                    "resourceURI": "http://gateway.marvel.com/v1/public/characters/1011334"
+                },
+                {
+                    "id": 1011334,
+                    "name": "3-D Man",
+                    "description": "",
+                    "modified": "2014-04-29T14:18:17-0400",
+                    "thumbnail": {
+                        "extension": "jpg"
+                    },
+                    "resourceURI": "http://gateway.marvel.com/v1/public/characters/1011334"
                 }
             ]
         }

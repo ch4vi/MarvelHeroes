@@ -1,36 +1,38 @@
 package com.xavi.marvelheroes.data.datasource
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.PagingState
 import com.xavi.marvelheroes.data.api.CharacterListService
-import com.xavi.marvelheroes.data.api.RetrofitDataSource
-import com.xavi.marvelheroes.data.api.RetrofitPredicate
+import com.xavi.marvelheroes.data.api.RetrofitPagedPredicate
+import com.xavi.marvelheroes.data.api.RetrofitPagedSource
 import com.xavi.marvelheroes.data.api.RetrofitRepository
 import com.xavi.marvelheroes.data.model.CharacterDTO
 import com.xavi.marvelheroes.data.model.MarvelResponseDTO
-import com.xavi.marvelheroes.data.model.PageDTO
-import com.xavi.marvelheroes.data.model.PageMapper
-import com.xavi.marvelheroes.data.model.ThumbnailDTO
 import com.xavi.marvelheroes.domain.model.CharacterDomainModel
 import com.xavi.marvelheroes.domain.model.CharactersDomainModel
 import com.xavi.marvelheroes.domain.model.PageDomainModel
-import com.xavi.marvelheroes.domain.model.ThumbnailDomainModel
 import com.xavi.marvelheroes.domain.repository.CharacterRepository
 import com.xavi.marvelheroes.domain.utils.Mapper
 import com.xavi.marvelheroes.domain.utils.NetworkClient
 import com.xavi.marvelheroes.domain.utils.State
+import kotlinx.coroutines.flow.Flow
 import retrofit2.Retrofit
 
 // region Repository
 
 class CharacterRepositoryImp(
-    dataSource: CharacterListDataSource,
-    private val mapper: Mapper<CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>
+    private val client: NetworkClient<Retrofit>,
+    private val mapper: Mapper<CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>,
 ) : CharacterRepository,
-    RetrofitRepository<CharacterListService, CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>(
-        dataSource
-    ) {
+    RetrofitRepository<CharacterListService, CharactersDomainModel, MarvelResponseDTO<CharacterDTO>> {
 
-    override suspend fun getCharacterList(): State<CharactersDomainModel> {
-        return fetch(CharacterListPredicate(mapper))
+    override fun getCharacterList(pagingConfig: PagingConfig): Flow<PagingData<CharacterDomainModel>> {
+        return Pager(
+            config = pagingConfig,
+            pagingSourceFactory = { CharacterListDataSource(client, mapper) }
+        ).flow
     }
 }
 
@@ -38,19 +40,37 @@ class CharacterRepositoryImp(
 
 // region DataSource
 
-abstract class CharacterListDataSource(
-    client: NetworkClient<Retrofit>
-) : RetrofitDataSource<CharacterListService, CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>(
-    client
-) {
-    abstract suspend fun getCharacterList(predicate: CharacterListPredicate): State<CharactersDomainModel>
-}
+class CharacterListDataSource(
+    client: NetworkClient<Retrofit>,
+    private val mapper: Mapper<CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>,
+) : RetrofitPagedSource<
+    CharacterListService,
+    CharacterDomainModel,
+    CharactersDomainModel,
+    MarvelResponseDTO<CharacterDTO>>() {
 
-class CharacterListDataSourceImpl(
-    client: NetworkClient<Retrofit>
-) : CharacterListDataSource(client) {
-    override suspend fun getCharacterList(predicate: CharacterListPredicate): State<CharactersDomainModel> {
-        return fetch(predicate)
+    override val networkClient = client
+
+    override fun getRefreshKey(state: PagingState<PageDomainModel, CharacterDomainModel>): PageDomainModel? {
+        return state.anchorPosition?.let {
+            PageDomainModel(offset = it, limit = state.config.pageSize, 0, 0)
+        }
+    }
+
+    override suspend fun load(params: LoadParams<PageDomainModel>): LoadResult<PageDomainModel, CharacterDomainModel> {
+        var current = params.key ?: PageDomainModel.start()
+        val predicate = CharacterListPredicate(current, mapper)
+
+        return when (val result = fetch(predicate)) {
+            is State.Success -> {
+                if (current.total == 0) current = result.data.page
+                val prev = predicate.previous(current)
+                val next = predicate.next(current)
+                LoadResult.Page(result.data.characters, prevKey = prev, nextKey = next)
+            }
+            is State.Error ->
+                LoadResult.Error(result.error)
+        }
     }
 }
 
@@ -59,73 +79,21 @@ class CharacterListDataSourceImpl(
 // region Predicate
 
 class CharacterListPredicate(
+    private val page: PageDomainModel,
     private val mapper: Mapper<CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>
-) : RetrofitPredicate<CharacterListService, CharactersDomainModel, MarvelResponseDTO<CharacterDTO>> {
+) : RetrofitPagedPredicate<CharacterListService, CharactersDomainModel, MarvelResponseDTO<CharacterDTO>> {
+
     override fun mapper() = mapper
     override fun service() = CharacterListService::class.java
     override fun endpoint(): suspend (CharacterListService) -> MarvelResponseDTO<CharacterDTO> = {
         val auth = Auth()
-        it.characters(ts = auth.ts, hash = auth.hash, apikey = auth.apikey)
-    }
-}
-
-// endregion
-
-// region Mapper
-
-class CharactersMapper(
-    private val characterMapper: Mapper<CharacterDomainModel, CharacterDTO>
-) : Mapper<CharactersDomainModel, MarvelResponseDTO<CharacterDTO>> {
-
-    companion object {
-        const val NAME = "characters_mapper"
-    }
-
-    private val pageMapper: Mapper<PageDomainModel, PageDTO<CharacterDTO>> = PageMapper()
-
-    override fun map(dto: MarvelResponseDTO<CharacterDTO>): CharactersDomainModel {
-        val pageDto = dto.data ?: throw java.lang.IllegalArgumentException("page")
-        val page = pageMapper.map(pageDto)
-        val characters = pageDto.results?.map { characterMapper.map(it) } ?: listOf()
-        return CharactersDomainModel(page, characters)
-    }
-}
-
-class ThumbnailMapper : Mapper<ThumbnailDomainModel, ThumbnailDTO> {
-
-    companion object {
-        const val NAME = "thumbnail_mapper"
-    }
-
-    override fun map(dto: ThumbnailDTO): ThumbnailDomainModel {
-        val path = dto.path ?: throw IllegalArgumentException("path")
-        val extension = dto.extension ?: throw IllegalArgumentException("extension")
-        return ThumbnailDomainModel(url = "$path.$extension")
-    }
-}
-
-class CharacterMapper(
-    private val thumbnailMapper: Mapper<ThumbnailDomainModel, ThumbnailDTO>
-) : Mapper<CharacterDomainModel, CharacterDTO> {
-
-    companion object {
-        const val NAME = "character_mapper"
-    }
-
-    override fun map(dto: CharacterDTO): CharacterDomainModel {
-        val id = dto.id ?: throw IllegalArgumentException("id")
-        val thumbnail = mapThumbnail(dto.thumbnail)
-        return CharacterDomainModel(id = id, name = dto.name, thumbnail = thumbnail)
-    }
-
-    @Suppress("SwallowedException")
-    private fun mapThumbnail(dto: ThumbnailDTO?): ThumbnailDomainModel? {
-        dto ?: return null
-        return try {
-            thumbnailMapper.map(dto)
-        } catch (e: IllegalArgumentException) {
-            null
-        }
+        it.characters(
+            ts = auth.ts,
+            hash = auth.hash,
+            apikey = auth.apikey,
+            limit = page.limit,
+            offset = page.offset
+        )
     }
 }
 

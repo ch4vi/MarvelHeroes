@@ -1,4 +1,4 @@
-package com.xavi.marvelheroes
+package com.xavi.marvelheroes.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.xavi.marvelheroes.R
 import com.xavi.marvelheroes.databinding.FragmentSecondBinding
 
 /**
