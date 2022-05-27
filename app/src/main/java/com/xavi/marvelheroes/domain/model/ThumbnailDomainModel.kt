@@ -1,3 +1,7 @@
 package com.xavi.marvelheroes.domain.model
 
-data class ThumbnailDomainModel(val url: String)
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class ThumbnailDomainModel(val url: String) : Parcelable
