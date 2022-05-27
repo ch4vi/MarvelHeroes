@@ -26,28 +26,28 @@ val otherThumbnail = ThumbnailDomainModel(url = "baz.foz")
 val characterDTO = CharacterDTO(
     id = "foo",
     name = "bar",
-    description="foobar",
+    description = "foobar",
     thumbnail = thumbnailDTO
 )
 
 val character = CharacterDomainModel(
     id = "foo",
     name = "bar",
-    description="foobar",
+    description = "foobar",
     thumbnail = thumbnail
 )
 
 val otherCharacterDTO = CharacterDTO(
     id = "foz",
     name = "baz",
-    description="foobar",
+    description = "foobar",
     thumbnail = otherThumbnailDTO
 )
 
 val otherCharacter = CharacterDomainModel(
     id = "foz",
     name = "baz",
-    description="foobar",
+    description = "foobar",
     thumbnail = otherThumbnail
 )
 
