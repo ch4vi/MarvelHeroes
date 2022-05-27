@@ -49,7 +49,7 @@ class CharacterDetailFragment : Fragment() {
 
     private fun initUI(character: CharacterDomainModel) {
         binding?.apply {
-            detailCharacterThumbnail.load(character.thumbnail?.url) {
+            detailCharacterThumbnail.load(character.thumbnail) {
                 placeholder(R.drawable.placeholder_character)
                 error(ColorDrawable(Color.RED))
                 scale(Scale.FILL)

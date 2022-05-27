@@ -7,21 +7,16 @@ import com.xavi.marvelheroes.data.model.ThumbnailDTO
 import com.xavi.marvelheroes.domain.model.CharacterDomainModel
 import com.xavi.marvelheroes.domain.model.CharactersDomainModel
 import com.xavi.marvelheroes.domain.model.PageDomainModel
-import com.xavi.marvelheroes.domain.model.ThumbnailDomainModel
 
 val thumbnailDTO = ThumbnailDTO(
     path = "foo",
     extension = "bar"
 )
 
-val thumbnail = ThumbnailDomainModel(url = "foo.bar")
-
 val otherThumbnailDTO = ThumbnailDTO(
     path = "baz",
     extension = "foz"
 )
-
-val otherThumbnail = ThumbnailDomainModel(url = "baz.foz")
 
 val characterDTO = CharacterDTO(
     id = "foo",
@@ -34,7 +29,7 @@ val character = CharacterDomainModel(
     id = "foo",
     name = "bar",
     description = "foobar",
-    thumbnail = thumbnail
+    thumbnail = "foo.bar"
 )
 
 val otherCharacterDTO = CharacterDTO(
@@ -48,7 +43,7 @@ val otherCharacter = CharacterDomainModel(
     id = "foz",
     name = "baz",
     description = "foobar",
-    thumbnail = otherThumbnail
+    thumbnail = "baz.foz"
 )
 
 val characterPageDTO = PageDTO(
