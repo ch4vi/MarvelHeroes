@@ -39,12 +39,12 @@ class CharacterListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         return (
-                binding ?: run {
-                    val binding = FragmentCharacterListBinding.inflate(layoutInflater)
-                    this.binding = binding
-                    binding
-                }
-                ).root
+            binding ?: run {
+                val binding = FragmentCharacterListBinding.inflate(layoutInflater)
+                this.binding = binding
+                binding
+            }
+            ).root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

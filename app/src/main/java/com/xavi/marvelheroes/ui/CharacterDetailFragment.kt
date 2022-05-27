@@ -32,12 +32,12 @@ class CharacterDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         return (
-                binding ?: run {
-                    val binding = FragmentCharacterDetailBinding.inflate(layoutInflater)
-                    this.binding = binding
-                    binding
-                }
-                ).root
+            binding ?: run {
+                val binding = FragmentCharacterDetailBinding.inflate(layoutInflater)
+                this.binding = binding
+                binding
+            }
+            ).root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
