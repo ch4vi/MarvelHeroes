@@ -13,7 +13,6 @@ import com.xavi.marvelheroes.data.model.MarvelResponseDTO
 import com.xavi.marvelheroes.domain.model.CharacterDomainModel
 import com.xavi.marvelheroes.domain.model.CharactersDomainModel
 import com.xavi.marvelheroes.domain.model.Failure
-import com.xavi.marvelheroes.domain.model.PageDomainModel
 import com.xavi.marvelheroes.domain.utils.Mapper
 import com.xavi.marvelheroes.domain.utils.NetworkClient
 import com.xavi.marvelheroes.domain.utils.State
@@ -31,7 +30,7 @@ import retrofit2.Retrofit
 class CharacterListDataSourceTest : AutoCloseKoinTest() {
 
     private lateinit var sut: CharacterListDataSource
-    private lateinit var mapper: Mapper<CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>
+    private lateinit var apiMapper: Mapper<CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>
 
     private val networkClient = mockk<NetworkClient<Retrofit>>()
     private val service = mockk<CharacterListService>()
@@ -39,25 +38,20 @@ class CharacterListDataSourceTest : AutoCloseKoinTest() {
     @Before
     fun setUp() {
         mockFetch(networkClient, CharacterListService::class.java, service)
-        mapper = CharactersMapper(CharacterMapper(ThumbnailMapper()))
-        sut = CharacterListDataSource(networkClient, mapper)
+        apiMapper = CharactersMapper(CharacterMapper(ThumbnailMapper()))
+        sut = CharacterListDataSource(networkClient, apiMapper, "foo")
     }
 
     @Test
     fun `GIVEN PagedDataSource WHEN load THEN return data`() = runBlocking {
         val expected = characterListDTO
-        coEvery { service.characters(any(), any(), any(), any(), any()) } returns expected
+        coEvery { service.characters(any(), any(), any(), any(), any(), any()) } returns expected
 
         val data = charactersList.characters
         val expectedResult = PagingSource.LoadResult.Page(
             data = data,
             prevKey = null,
-            nextKey = PageDomainModel(
-                offset = data.size,
-                limit = data.size,
-                total = data.size,
-                count = data.size
-            )
+            nextKey = 2
         )
         assertEquals(
             expectedResult,
@@ -74,10 +68,10 @@ class CharacterListDataSourceTest : AutoCloseKoinTest() {
     @Test(expected = Throwable::class)
     fun `GIVEN PagedDataSource WHEN load THEN return exception`() = runBlocking {
         val error = RuntimeException("404", Throwable())
-        coEvery { service.characters(any(), any(), any(), any(), any()) } throws error
+        coEvery { service.characters(any(), any(), any(), any(), any(), any()) } throws error
 
         val expectedResult =
-            PagingSource.LoadResult.Error<PageDomainModel, CharacterDomainModel>(
+            PagingSource.LoadResult.Error<Int, CharacterDomainModel>(
                 Failure.Unexpected(error.message)
             )
         assertEquals(
@@ -95,10 +89,11 @@ class CharacterListDataSourceTest : AutoCloseKoinTest() {
     @Test
     fun `GIVEN getCharacterList WHEN fetch THEN model is filled`() = runBlocking {
         val expected = characterListDTO
-        coEvery { service.characters(any(), any(), any(), any(), any()) } returns expected
+        coEvery { service.characters(any(), any(), any(), any(), any(), any()) } returns expected
 
+        val requestParams = RequestParams(0, 0)
         val response =
-            sut.fetch(CharacterListPredicate(PageDomainModel.start(), mapper))
+            sut.fetch(CharacterListPredicate(requestParams, apiMapper))
 
         assertTrue(response.isSuccess)
         response as State.Success
@@ -110,10 +105,11 @@ class CharacterListDataSourceTest : AutoCloseKoinTest() {
     fun `GIVEN getCharacterList WHEN fetch AND errorResponse THEN error contains throwable`() =
         runBlocking {
             val expected = Failure.Unexpected()
-            coEvery { service.characters(any(), any(), any(), any(), any()) } throws expected
+            coEvery { service.characters(any(), any(), any(), any(), any(), any()) } throws expected
 
+            val requestParams = RequestParams(0, 0)
             val response =
-                sut.fetch(CharacterListPredicate(PageDomainModel.start(), mapper))
+                sut.fetch(CharacterListPredicate(requestParams, apiMapper))
 
             assertTrue(response.isFailure)
             response as State.Error
