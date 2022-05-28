@@ -7,7 +7,7 @@ import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.xavi.marvelheroes.databinding.ItemCharacterLoaderBinding
-import com.xavi.marvelheroes.ui.getMessage
+import com.xavi.marvelheroes.ui.utils.getMessage
 
 class CharactersLoaderAdapter(private val onRetry: () -> Unit) :
     LoadStateAdapter<CharactersLoaderAdapter.LoaderViewHolder>() {

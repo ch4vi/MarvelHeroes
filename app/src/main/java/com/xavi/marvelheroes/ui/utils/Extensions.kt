@@ -1,4 +1,4 @@
-package com.xavi.marvelheroes.ui
+package com.xavi.marvelheroes.ui.utils
 
 import android.content.Context
 import androidx.annotation.StringRes

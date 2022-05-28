@@ -22,6 +22,7 @@ import com.xavi.marvelheroes.presentation.utils.EventObserver
 import com.xavi.marvelheroes.ui.CharacterDetailFragment.Companion.ARG_CHARACTER
 import com.xavi.marvelheroes.ui.adapter.CharactersAdapter
 import com.xavi.marvelheroes.ui.adapter.CharactersLoaderAdapter
+import com.xavi.marvelheroes.ui.utils.getMessage
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

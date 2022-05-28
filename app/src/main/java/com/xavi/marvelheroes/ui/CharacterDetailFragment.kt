@@ -15,6 +15,7 @@ import com.xavi.marvelheroes.R
 import com.xavi.marvelheroes.databinding.FragmentCharacterDetailBinding
 import com.xavi.marvelheroes.domain.model.CharacterDomainModel
 import com.xavi.marvelheroes.domain.model.Failure
+import com.xavi.marvelheroes.ui.utils.getMessage
 
 class CharacterDetailFragment : Fragment() {
 
