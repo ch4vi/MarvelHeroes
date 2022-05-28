@@ -1,6 +1,8 @@
 package com.xavi.marvelheroes.data.api
 
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingSource
+import androidx.paging.RemoteMediator
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
@@ -11,7 +13,6 @@ import com.xavi.marvelheroes.BuildConfig.BASE_URL
 import com.xavi.marvelheroes.BuildConfig.NETWORK_LOGGING
 import com.xavi.marvelheroes.domain.model.ErrorDomainModel
 import com.xavi.marvelheroes.domain.model.Failure
-import com.xavi.marvelheroes.domain.model.PageDomainModel
 import com.xavi.marvelheroes.domain.utils.DTO
 import com.xavi.marvelheroes.domain.utils.DataSource
 import com.xavi.marvelheroes.domain.utils.NetworkClient
@@ -82,7 +83,15 @@ interface RetrofitRepository<API, T, R : DTO> : Repository<T, R, RetrofitPagedPr
 // region DataSource
 
 abstract class RetrofitPagedSource<API, LIST : Any, T, R : DTO> :
-    PagingSource<PageDomainModel, LIST>(),
+    PagingSource<Int, LIST>(),
+    RetrofitDataSource<API, T, R>
+
+@ExperimentalPagingApi
+abstract class RetrofitMediator<API, T, R : DTO, S : Any> :
+    RemoteMediator<Int, S>(),
+    RetrofitDataSource<API, T, R>
+
+interface RetrofitDataSource<API, T, R : DTO> :
     DataSource<Retrofit, T, R, RetrofitPagedPredicate<API, T, R>> {
 
     @Suppress("TooGenericExceptionCaught")
@@ -127,18 +136,6 @@ abstract class RetrofitPagedSource<API, LIST : Any, T, R : DTO> :
 interface RetrofitPagedPredicate<API, T, R : DTO> : Predicate<T, R> {
     fun service(): Class<API>
     fun endpoint(): suspend (API) -> R
-
-    fun previous(current: PageDomainModel): PageDomainModel? {
-        return if (current.offset == PageDomainModel.OFFSET) null
-        else current.copy(
-            offset = Integer.max(current.offset - current.limit, PageDomainModel.OFFSET)
-        )
-    }
-
-    fun next(current: PageDomainModel): PageDomainModel? {
-        return if (current.offset == current.total) null
-        else current.copy(offset = Integer.min(current.offset + current.limit, current.total))
-    }
 }
 
 // endregion

@@ -2,8 +2,13 @@ package com.xavi.marvelheroes.domain.utils
 
 interface DTO
 
-fun interface Mapper<T, R : DTO> {
+interface Mapper<T, R> {
     fun map(dto: R): T
+}
+
+interface DBMapper<DOMAIN, DB> {
+    fun mapToDomain(dbModel: DB): DOMAIN
+    fun mapToDB(domainModel: DOMAIN): DB
 }
 
 sealed class State<out T> {

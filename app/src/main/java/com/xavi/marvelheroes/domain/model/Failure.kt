@@ -4,7 +4,7 @@ import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-sealed class Failure(val reason: String? = null) : Throwable(reason) {
+sealed class Failure(reason: String? = null) : Throwable(reason) {
     object NetworkError : Failure()
     class Unexpected(reason: String? = null) : Failure(reason)
     class MalformedError(reason: String? = null) : Failure(reason)

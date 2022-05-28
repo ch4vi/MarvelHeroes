@@ -1,10 +1,9 @@
 package com.xavi.marvelheroes.data.mapper
 
 import com.xavi.marvelheroes.data.model.ThumbnailDTO
-import com.xavi.marvelheroes.domain.model.ThumbnailDomainModel
 import com.xavi.marvelheroes.domain.utils.Mapper
 
-class ThumbnailMapper : Mapper<ThumbnailDomainModel, ThumbnailDTO> {
+class ThumbnailMapper : Mapper<String, ThumbnailDTO> {
 
     companion object {
         const val NAME = "thumbnail_mapper"
@@ -12,11 +11,11 @@ class ThumbnailMapper : Mapper<ThumbnailDomainModel, ThumbnailDTO> {
         private const val HTTPS = "https:"
     }
 
-    override fun map(dto: ThumbnailDTO): ThumbnailDomainModel {
+    override fun map(dto: ThumbnailDTO): String {
         var path = dto.path ?: throw IllegalArgumentException("path")
         val extension = dto.extension ?: throw IllegalArgumentException("extension")
         if (path.startsWith(HTTP)) path = path.replace(HTTP, HTTPS)
 
-        return ThumbnailDomainModel(url = "$path.$extension")
+        return "$path.$extension"
     }
 }

@@ -9,6 +9,7 @@ interface CharacterListService {
 
     @GET(MarvelAPI.Character.path)
     suspend fun characters(
+        @Query("nameStartsWith") queryName: String?,
         @Query("limit") limit: Int,
         @Query("offset") offset: Int,
         @Query("ts") ts: String,

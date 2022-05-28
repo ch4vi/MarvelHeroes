@@ -54,7 +54,7 @@ class CharactersAdapter(
             item: CharacterDomainModel,
             onItemClickListener: (CharacterDomainModel) -> Unit
         ) {
-            item.thumbnail?.url?.let {
+            item.thumbnail?.let {
                 val dimen = binding.root.context.resources.getDimension(R.dimen.space_s)
                 binding.itemCharacterPreview.load(it) {
                     placeholder(R.drawable.placeholder_character)

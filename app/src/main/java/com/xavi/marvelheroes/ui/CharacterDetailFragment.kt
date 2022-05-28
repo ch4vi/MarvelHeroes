@@ -15,6 +15,7 @@ import com.xavi.marvelheroes.R
 import com.xavi.marvelheroes.databinding.FragmentCharacterDetailBinding
 import com.xavi.marvelheroes.domain.model.CharacterDomainModel
 import com.xavi.marvelheroes.domain.model.Failure
+import com.xavi.marvelheroes.ui.utils.getMessage
 
 class CharacterDetailFragment : Fragment() {
 
@@ -49,7 +50,7 @@ class CharacterDetailFragment : Fragment() {
 
     private fun initUI(character: CharacterDomainModel) {
         binding?.apply {
-            detailCharacterThumbnail.load(character.thumbnail?.url) {
+            detailCharacterThumbnail.load(character.thumbnail) {
                 placeholder(R.drawable.placeholder_character)
                 error(ColorDrawable(Color.RED))
                 scale(Scale.FILL)
