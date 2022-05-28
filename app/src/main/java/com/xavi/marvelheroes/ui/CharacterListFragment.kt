@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -23,7 +24,6 @@ import com.xavi.marvelheroes.ui.adapter.CharactersAdapter
 import com.xavi.marvelheroes.ui.adapter.CharactersLoaderAdapter
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class CharacterListFragment : Fragment() {
 
@@ -56,12 +56,21 @@ class CharacterListFragment : Fragment() {
 
     private fun resolveState(state: CharacterListViewState) {
         when (state) {
-            is CharacterListViewState.OnFailure -> onFailure(state.error)
             is CharacterListViewState.ShowData -> showData(state.data)
+            is CharacterListViewState.ShowQueryData -> showQueryData(state.data)
         }
     }
 
     private fun initUI() {
+        initCharacterListUI()
+        binding?.apply {
+            searchField.editText?.addTextChangedListener { text ->
+                viewModel.dispatch(CharacterListEvent.SearchCharacters(text.toString()))
+            }
+        }
+    }
+
+    private fun initCharacterListUI() {
         binding?.apply {
             charactersAdapter = CharactersAdapter { goToDetail(it) }
             loaderAdapter = CharactersLoaderAdapter { charactersAdapter.retry() }
@@ -98,15 +107,18 @@ class CharacterListFragment : Fragment() {
         )
     }
 
-    private fun onFailure(t: Throwable) {
-        Timber.e(t)
-    }
-
     private fun showData(data: PagingData<CharacterDomainModel>) {
         lifecycleScope.launch {
             binding?.apply {
                 charactersAdapter.submitData(data)
             }
+        }
+    }
+
+    private fun showQueryData(data: PagingData<CharacterDomainModel>) {
+        lifecycleScope.launch {
+            charactersAdapter.submitData(data)
+            binding?.characterList?.scrollToPosition(0)
         }
     }
 
