@@ -12,6 +12,72 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
     }
+    versionCatalogs {
+        libs {
+            alias("android-core").to("androidx.core", "core-ktx").version("1.7.0")
+            alias("koin").to("io.insert-koin", "koin-android").version("3.1.6")
+            alias("timber").to("com.jakewharton.timber", "timber").version("4.7.1")
+            bundle("common", ["android-core", "koin", "timber"])
+
+            version("navigation", "2.4.2")
+            alias("appcompat").to("androidx.appcompat", "appcompat").version("1.4.1")
+            alias("coil").to("io.coil-kt", "coil").version("2.0.0-rc03")
+            alias("constraint").to("androidx.constraintlayout", "constraintlayout").version("2.1.4")
+            alias("material").to("com.google.android.material", "material").version("1.7.0-alpha02")
+            alias("nav-fragment").to("androidx.navigation", "navigation-fragment-ktx").versionRef("navigation")
+            alias("nav-ui").to("androidx.navigation", "navigation-ui-ktx").versionRef("navigation")
+            alias("paging").to("androidx.paging", "paging-runtime-ktx").version("3.1.1")
+            bundle("ui", [
+                    "appcompat",
+                    "coil",
+                    "constraint",
+                    "material",
+                    "nav-fragment",
+                    "nav-ui",
+                    "paging",
+            ])
+
+            version("moshi", "1.13.0")
+            version("room", "2.4.2")
+            version("retrofit", "2.9.0")
+            alias("moshi-kapt").to("com.squareup.moshi", "moshi-kotlin-codegen").versionRef("moshi")
+            alias("room-kapt").to("androidx.room", "room-compiler").versionRef("room")
+
+            alias("logging").to("com.squareup.okhttp3", "logging-interceptor").version("4.9.1")
+            alias("moshi-adapters").to("com.squareup.moshi", "moshi-adapters").versionRef("moshi")
+            alias("moshi-kotlin").to("com.squareup.moshi", "moshi-kotlin").versionRef("moshi")
+            alias("okhttp").to("com.squareup.okhttp3", "okhttp").version("4.9.3")
+            alias("retrofit").to("com.squareup.retrofit2", "retrofit").versionRef("retrofit")
+            alias("retrofit-moshi").to("com.squareup.retrofit2", "converter-moshi").versionRef("retrofit")
+            alias("room-ktx").to("androidx.room", "room-ktx").versionRef("room")
+            alias("room-paging").to("androidx.room", "room-paging").version("2.5.0-alpha01")
+            alias("room-runtime").to("androidx.room", "room-runtime").versionRef("room")
+            bundle("data", [
+                    "logging",
+                    "moshi-adapters",
+                    "moshi-kotlin",
+                    "okhttp",
+                    "retrofit",
+                    "retrofit-moshi",
+                    "room-ktx",
+                    "room-paging",
+                    "room-runtime",
+            ])
+
+            alias("core-test").to("androidx.arch.core", "core-testing").version("2.1.0")
+            alias("coroutines-test").to("org.jetbrains.kotlinx", "kotlinx-coroutines-test").version("1.6.0")
+            alias("junit").to("junit", "junit").version("4.13.2")
+            alias("koin-test").to("io.insert-koin", "koin-test-junit4").version("3.1.6")
+            alias("mockk").to("io.mockk", "mockk").version("1.12.0")
+            bundle("test", [
+                    "core-test",
+                    "coroutines-test",
+                    "junit",
+                    "koin-test",
+                    "mockk",
+            ])
+        }
+    }
 }
 
 rootProject.name = "MarvelHeroes"

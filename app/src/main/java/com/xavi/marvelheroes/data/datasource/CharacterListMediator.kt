@@ -19,10 +19,10 @@ import com.xavi.marvelheroes.domain.utils.DBMapper
 import com.xavi.marvelheroes.domain.utils.Mapper
 import com.xavi.marvelheroes.domain.utils.NetworkClient
 import com.xavi.marvelheroes.domain.utils.State
-import java.io.IOException
-import java.io.InvalidObjectException
 import retrofit2.HttpException
 import retrofit2.Retrofit
+import java.io.IOException
+import java.io.InvalidObjectException
 
 @ExperimentalPagingApi
 class CharacterListMediator(
@@ -31,10 +31,10 @@ class CharacterListMediator(
     private val apiMapper: Mapper<CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>,
     private val dbMapper: DBMapper<CharacterDomainModel, CharacterDB>,
 ) : RetrofitMediator<
-        CharacterListService,
-        CharactersDomainModel,
-        MarvelResponseDTO<CharacterDTO>,
-        CharacterDB>() {
+    CharacterListService,
+    CharactersDomainModel,
+    MarvelResponseDTO<CharacterDTO>,
+    CharacterDB>() {
 
     private object Flags {
         const val END_OF_PAGINATION = -1
