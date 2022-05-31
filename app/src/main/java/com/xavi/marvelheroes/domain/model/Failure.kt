@@ -10,6 +10,7 @@ sealed class Failure(reason: String? = null) : Throwable(reason) {
     class MalformedError(reason: String? = null) : Failure(reason)
     class GenericError(reason: String? = null) : Failure(reason)
     class ResponseError(val error: ErrorDomainModel) : Failure()
+    object AppendError : Failure()
 }
 
 @Keep

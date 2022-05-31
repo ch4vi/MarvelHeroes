@@ -3,7 +3,7 @@ package com.xavi.marvelheroes.data.datasource
 import com.xavi.marvelheroes.BuildConfig
 import java.math.BigInteger
 import java.security.MessageDigest
-import java.util.Date
+import java.util.Calendar
 import java.util.Locale
 
 internal class Auth {
@@ -13,8 +13,7 @@ internal class Auth {
         private const val LENGTH = 32
     }
 
-    val ts: String
-        get() = "${Date().time}"
+    val ts = "${Calendar.getInstance().timeInMillis}"
     val hash: String
         get() = "$ts${BuildConfig.KEY_PRIVATE}$apikey".md5()
     val apikey: String

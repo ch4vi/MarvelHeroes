@@ -11,6 +11,8 @@ import com.xavi.marvelheroes.domain.usecase.SearchCharacterList
 import com.xavi.marvelheroes.presentation.utils.BaseViewModel
 import com.xavi.marvelheroes.presentation.utils.Event
 import com.xavi.marvelheroes.presentation.utils.toEvent
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 sealed class CharacterListEvent {
     object GetCharacters : CharacterListEvent()
@@ -42,7 +44,8 @@ class CharacterListViewModel(
         this {
             getCharacterList(Unit)
                 .cachedIn(viewModelScope)
-                .collect {
+                .distinctUntilChanged()
+                .collectLatest {
                     changeState(CharacterListViewState.ShowData(it))
                 }
         }
@@ -52,7 +55,6 @@ class CharacterListViewModel(
         this {
             val query = name.ifBlank { null }
             searchCharacterList(SearchCharacterList.Param(queryName = query))
-                .cachedIn(viewModelScope)
                 .collect {
                     changeState(CharacterListViewState.ShowQueryData(it))
                 }

@@ -15,6 +15,7 @@ import com.xavi.marvelheroes.data.model.CharacterDTO
 import com.xavi.marvelheroes.data.model.MarvelResponseDTO
 import com.xavi.marvelheroes.domain.model.CharacterDomainModel
 import com.xavi.marvelheroes.domain.model.CharactersDomainModel
+import com.xavi.marvelheroes.domain.model.Failure
 import com.xavi.marvelheroes.domain.utils.DBMapper
 import com.xavi.marvelheroes.domain.utils.Mapper
 import com.xavi.marvelheroes.domain.utils.NetworkClient
@@ -67,6 +68,8 @@ class CharacterListMediator(
             return MediatorResult.Error(exception)
         } catch (exception: HttpException) {
             return MediatorResult.Error(exception)
+        } catch (f: Failure) {
+            return MediatorResult.Error(f)
         }
     }
 
@@ -124,17 +127,21 @@ class CharacterListMediator(
         state: PagingState<Int, CharacterDB>
     ): Int {
         return when (loadType) {
-            LoadType.REFRESH ->
-                findClosestPage(state)?.let {
-                    it.next?.minus(1)
+            LoadType.REFRESH -> {
+                val closestPage = findClosestPage(state)?.let {
+                    it.next?.minus(state.config.pageSize)
                 } ?: INITIAL_OFFSET
-            LoadType.APPEND ->
-                getLastPage(state)?.next
-                    ?: INITIAL_OFFSET
+                closestPage
+            }
+            LoadType.APPEND -> {
+                val appendPage = getLastPage(state)?.next
+                appendPage ?: throw Failure.AppendError
+            }
             LoadType.PREPEND -> {
-                val page = getInitialPage(state)
+                val prependPage = getInitialPage(state)
                     ?: throw InvalidObjectException("Invalid initial page")
-                page.previous ?: END_OF_PAGINATION
+                val previous = prependPage.previous
+                previous ?: END_OF_PAGINATION
             }
         }
     }
