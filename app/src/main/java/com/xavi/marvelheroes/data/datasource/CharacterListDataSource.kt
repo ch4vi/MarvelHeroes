@@ -40,18 +40,17 @@ class CharacterRepositoryImp(
     RetrofitRepository<CharacterListService, CharactersDomainModel, MarvelResponseDTO<CharacterDTO>> {
 
     override fun getCharacterList(pagingConfig: PagingConfig): Flow<PagingData<CharacterDomainModel>> {
-        val pagingSourceFactory = { db.characterDao().getAll() }
         return Pager(
             config = pagingConfig,
-            pagingSourceFactory = pagingSourceFactory,
             remoteMediator = CharacterListMediator(client, db, apiMapper, dbMapper)
-        ).flow.transform {
-            emit(
-                it.map { dbItem ->
-                    dbMapper.mapToDomain(dbItem)
-                }
-            )
-        }
+        ) { db.characterDao().getAll() }
+            .flow.transform {
+                emit(
+                    it.map { dbItem ->
+                        dbMapper.mapToDomain(dbItem)
+                    }
+                )
+            }
     }
 
     override fun searchCharacterList(
