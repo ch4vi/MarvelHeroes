@@ -6,7 +6,7 @@ import com.xavi.marvelheroes.domain.model.CharacterDomainModel
 import com.xavi.marvelheroes.domain.utils.PagedRepository
 import kotlinx.coroutines.flow.Flow
 
-interface CharacterRepository : PagedRepository {
+interface CharacterListRepository : PagedRepository {
 
     fun getCharacterList(pagingConfig: PagingConfig = getDefaultPageConfig()): Flow<PagingData<CharacterDomainModel>>
 
@@ -15,3 +15,4 @@ interface CharacterRepository : PagedRepository {
         queryName: String?
     ): Flow<PagingData<CharacterDomainModel>>
 }
+
