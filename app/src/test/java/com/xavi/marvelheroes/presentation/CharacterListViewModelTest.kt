@@ -21,7 +21,7 @@ import org.junit.Before
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class CharacterListViewModelTest: DispatcherTest() {
+class CharacterListViewModelTest : DispatcherTest() {
     @RelaxedMockK
     private lateinit var characterListUseCase: GetCharacterList
 
