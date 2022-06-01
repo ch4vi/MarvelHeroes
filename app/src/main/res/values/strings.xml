@@ -4,6 +4,7 @@
     <!--   Error -->
     <string name="app_error_invalid_request">Your request could not be completed</string>
     <string name="app_error_unknown">Something went wrong</string>
+    <string name="app_error_character_not_found">We could not get the character you request it</string>
 
     <!--   Global -->
     <string name="app_global_retry">Retry</string>

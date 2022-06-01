@@ -7,4 +7,10 @@ sealed class MarvelAPI {
             const val path: String = "characters"
         }
     }
+
+    class CharacterDetail : MarvelAPI() {
+        companion object {
+            const val path: String = "characters/{characterId}"
+        }
+    }
 }

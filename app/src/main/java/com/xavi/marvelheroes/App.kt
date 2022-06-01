@@ -1,6 +1,7 @@
 package com.xavi.marvelheroes
 
 import android.app.Application
+import com.xavi.marvelheroes.di.characterDetailModule
 import com.xavi.marvelheroes.di.characterListModule
 import com.xavi.marvelheroes.di.mapperModule
 import com.xavi.marvelheroes.di.retrofitModule
@@ -22,7 +23,8 @@ class App : Application() {
                     mapperModule,
                     roomModule,
                     retrofitModule,
-                    characterListModule
+                    characterListModule,
+                    characterDetailModule,
                 )
             )
         }

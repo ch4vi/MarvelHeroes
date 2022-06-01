@@ -16,9 +16,11 @@ import com.xavi.marvelheroes.domain.model.Failure
 import com.xavi.marvelheroes.domain.utils.Mapper
 import com.xavi.marvelheroes.domain.utils.NetworkClient
 import com.xavi.marvelheroes.domain.utils.State
+import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
+import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -27,23 +29,27 @@ import org.junit.Test
 import org.koin.test.AutoCloseKoinTest
 import retrofit2.Retrofit
 
+@ExperimentalCoroutinesApi
 class CharacterListDataSourceTest : AutoCloseKoinTest() {
+    @RelaxedMockK
+    lateinit var networkClient: NetworkClient<Retrofit>
+
+    @RelaxedMockK
+    lateinit var service: CharacterListService
 
     private lateinit var sut: CharacterListDataSource
     private lateinit var apiMapper: Mapper<CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>
 
-    private val networkClient = mockk<NetworkClient<Retrofit>>()
-    private val service = mockk<CharacterListService>()
-
     @Before
     fun setUp() {
+        MockKAnnotations.init(this)
         mockFetch(networkClient, CharacterListService::class.java, service)
         apiMapper = CharactersMapper(CharacterMapper(ThumbnailMapper()))
         sut = CharacterListDataSource(networkClient, apiMapper, "foo")
     }
 
     @Test
-    fun `GIVEN PagedDataSource WHEN load THEN return data`() = runBlocking {
+    fun `GIVEN PagedDataSource WHEN load THEN return data`() = runTest {
         val expected = characterListDTO
         coEvery { service.characters(any(), any(), any(), any(), any(), any()) } returns expected
 
@@ -66,7 +72,7 @@ class CharacterListDataSourceTest : AutoCloseKoinTest() {
     }
 
     @Test(expected = Throwable::class)
-    fun `GIVEN PagedDataSource WHEN load THEN return exception`() = runBlocking {
+    fun `GIVEN PagedDataSource WHEN load THEN return exception`() = runTest {
         val error = RuntimeException("404", Throwable())
         coEvery { service.characters(any(), any(), any(), any(), any(), any()) } throws error
 
@@ -87,7 +93,7 @@ class CharacterListDataSourceTest : AutoCloseKoinTest() {
     }
 
     @Test
-    fun `GIVEN getCharacterList WHEN fetch THEN model is filled`() = runBlocking {
+    fun `GIVEN getCharacterList WHEN fetch THEN model is filled`() = runTest {
         val expected = characterListDTO
         coEvery { service.characters(any(), any(), any(), any(), any(), any()) } returns expected
 
@@ -103,7 +109,7 @@ class CharacterListDataSourceTest : AutoCloseKoinTest() {
 
     @Test
     fun `GIVEN getCharacterList WHEN fetch AND errorResponse THEN error contains throwable`() =
-        runBlocking {
+        runTest {
             val expected = Failure.Unexpected()
             coEvery { service.characters(any(), any(), any(), any(), any(), any()) } throws expected
 
