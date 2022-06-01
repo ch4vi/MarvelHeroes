@@ -9,6 +9,7 @@ import com.xavi.marvelheroes.domain.model.Failure
 fun Throwable.getMessage(context: Context): String {
     return when (this) {
         is Failure.ResponseError -> context.getString(this.getMessageRes())
+        is Failure.AppendError -> context.getString(R.string.app_error_unknown)
         else -> this.message ?: context.getString(R.string.app_error_unknown)
     }
 }
