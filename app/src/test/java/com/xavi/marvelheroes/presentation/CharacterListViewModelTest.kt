@@ -15,18 +15,18 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class CharacterListViewModelTest : DispatcherTest() {
+class CharacterListViewModelTest: DispatcherTest() {
     @RelaxedMockK
-    lateinit var characterListUseCase: GetCharacterList
+    private lateinit var characterListUseCase: GetCharacterList
 
     @RelaxedMockK
-    lateinit var searchCharacterUseCase: SearchCharacterList
+    private lateinit var searchCharacterUseCase: SearchCharacterList
 
     @RelaxedMockK
     private lateinit var observer: Observer<Event<CharacterListViewState>>
@@ -39,21 +39,8 @@ class CharacterListViewModelTest : DispatcherTest() {
         viewModel = CharacterListViewModel(characterListUseCase, searchCharacterUseCase)
     }
 
-    /*
-    sealed class CharacterListEvent {
-    object GetCharacters : CharacterListEvent()
-    class SearchCharacters(val name: String) : CharacterListEvent()
-}
-
-sealed class CharacterListViewState {
-    class OnFailure(val error: Throwable) : CharacterListViewState()
-    class ShowData(val data: PagingData<CharacterDomainModel>) : CharacterListViewState()
-    class ShowQueryData(val data: PagingData<CharacterDomainModel>) : CharacterListViewState()
-}
-     */
-
     @Test
-    fun `GIVEN ViewModel WHEN GetCharacters event THEN show data`() = runBlocking {
+    fun `GIVEN ViewModel WHEN GetCharacters event THEN show data`() = runTest {
         viewModel.viewState.observeForever(observer)
 
         val expected: Flow<PagingData<CharacterDomainModel>> =
@@ -68,7 +55,7 @@ sealed class CharacterListViewState {
     }
 
     @Test(expected = Throwable::class)
-    fun `GIVEN ViewModel WHEN GetCharacters event THEN return exception`() = runBlocking {
+    fun `GIVEN ViewModel WHEN GetCharacters event THEN return exception`() = runTest {
         viewModel.viewState.observeForever(observer)
 
         val expected = Failure.Unexpected(reason = "foo")
@@ -80,7 +67,7 @@ sealed class CharacterListViewState {
     }
 
     @Test
-    fun `GIVEN ViewModel WHEN SearchCharacterList event THEN show data`() = runBlocking {
+    fun `GIVEN ViewModel WHEN SearchCharacterList event THEN show data`() = runTest {
         viewModel.viewState.observeForever(observer)
 
         val expected: Flow<PagingData<CharacterDomainModel>> =
@@ -95,7 +82,7 @@ sealed class CharacterListViewState {
     }
 
     @Test(expected = Throwable::class)
-    fun `GIVEN ViewModel WHEN SearchCharacterList event THEN return exception`() = runBlocking {
+    fun `GIVEN ViewModel WHEN SearchCharacterList event THEN return exception`() = runTest {
         viewModel.viewState.observeForever(observer)
 
         val expected = Failure.Unexpected(reason = "foo")

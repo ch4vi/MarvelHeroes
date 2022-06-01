@@ -15,4 +15,3 @@ interface CharacterListRepository : PagedRepository {
         queryName: String?
     ): Flow<PagingData<CharacterDomainModel>>
 }
-

@@ -21,15 +21,13 @@ import retrofit2.Retrofit
 // region Repository
 
 class CharacterDetailRepositoryImp(
-    private val client: NetworkClient<Retrofit>,
+    private val dataSource: CharacterDetailDataSource,
     private val mapper: Mapper<CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>,
 ) : CharacterDetailRepository,
     RetrofitRepository<CharacterListService, CharactersDomainModel, MarvelResponseDTO<CharacterDTO>> {
 
-
     override fun getCharacter(characterId: String): Flow<CharacterDomainModel> = flow {
-        val dataSource = CharacterDetailDataSource(client, characterId, mapper)
-        when (val result = dataSource.load()) {
+        when (val result = dataSource.load(CharacterDetailPredicate(characterId, mapper))) {
             is State.Error -> throw result.error
             is State.Success -> {
                 val character = result.data.characters.firstOrNull()
@@ -37,7 +35,6 @@ class CharacterDetailRepositoryImp(
                 else emit(character)
             }
         }
-
     }
 }
 
@@ -46,9 +43,7 @@ class CharacterDetailRepositoryImp(
 // region DataSource
 
 class CharacterDetailDataSource(
-    client: NetworkClient<Retrofit>,
-    private val characterId: String,
-    private val mapper: Mapper<CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>,
+    client: NetworkClient<Retrofit>
 ) : RetrofitDataSource<
         CharacterDetailService,
         CharactersDomainModel,
@@ -56,8 +51,7 @@ class CharacterDetailDataSource(
 
     override val networkClient = client
 
-    suspend fun load(): State<CharactersDomainModel> {
-        val predicate = CharacterDetailPredicate(characterId, mapper)
+    suspend fun load(predicate: CharacterDetailPredicate): State<CharactersDomainModel> {
         return fetch(predicate)
     }
 }

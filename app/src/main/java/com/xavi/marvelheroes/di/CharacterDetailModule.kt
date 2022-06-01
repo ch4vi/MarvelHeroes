@@ -1,6 +1,7 @@
 package com.xavi.marvelheroes.di
 
 import com.xavi.marvelheroes.data.api.RetrofitConfiguration.Companion.CLIENT
+import com.xavi.marvelheroes.data.datasource.CharacterDetailDataSource
 import com.xavi.marvelheroes.data.datasource.CharacterDetailRepositoryImp
 import com.xavi.marvelheroes.data.mapper.CharactersMapper
 import com.xavi.marvelheroes.domain.repository.CharacterDetailRepository
@@ -12,9 +13,10 @@ import org.koin.dsl.module
 
 val characterDetailModule = module {
 
+    single { CharacterDetailDataSource(client = get(named(CLIENT))) }
     single<CharacterDetailRepository> {
         CharacterDetailRepositoryImp(
-            client = get(named(CLIENT)),
+            dataSource = get(),
             mapper = get(named(CharactersMapper.NAME)),
         )
     }

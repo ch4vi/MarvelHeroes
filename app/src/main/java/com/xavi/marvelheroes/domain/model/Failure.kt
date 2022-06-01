@@ -3,6 +3,7 @@ package com.xavi.marvelheroes.domain.model
 import androidx.annotation.Keep
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.xavi.marvelheroes.domain.utils.State
 
 sealed class Failure(reason: String? = null) : Throwable(reason) {
     object NetworkError : Failure()
@@ -13,6 +14,8 @@ sealed class Failure(reason: String? = null) : Throwable(reason) {
     class ResponseError(val error: ErrorDomainModel) : Failure()
     object AppendError : Failure()
 }
+
+fun Failure.toState() = State.Error(this)
 
 @Keep
 @JsonClass(generateAdapter = true)
