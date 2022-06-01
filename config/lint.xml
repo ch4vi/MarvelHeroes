@@ -6,6 +6,8 @@
         <ignore path="*/bcpkix-jdk15on/*"/>
         <ignore path="*/edu.ucar/*"/>
         <ignore path="*/com.github.mhshams/*"/>
+        <!-- Temporary until https://github.com/Kotlin/kotlinx.coroutines/issues/2004 is resolved. -->
+        <ignore path="**/kotlinx-coroutines-core-*.jar"/>
     </issue>
     <issue id="UnusedIds" severity="ignore" />
     <issue id="UnusedResources" severity="ignore" />
@@ -32,8 +34,5 @@
     <issue id="CustomSplashScreen" severity="ignore"/>
     <issue id="MediaCapabilities" severity="ignore"/>
     <issue id="TrustAllX509TrustManager" severity="ignore"/>
-    <!-- Temporary until https://github.com/Kotlin/kotlinx.coroutines/issues/2004 is resolved. -->
-    <issue id="InvalidPackage">
-        <ignore path="**/kotlinx-coroutines-core-*.jar"/>
-    </issue>
+    <issue id="SelectableText" severity="ignore"/>
 </lint>

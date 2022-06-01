@@ -2,8 +2,7 @@
 
 buildscript {
     ext {
-        version_name = "0.0.1"
-        kotlin_version = '1.4.20'
+        version_name = "1.0.0"
         sdk = [compile: 32, target: 32, min: 28]
     }
     dependencies {
@@ -12,8 +11,8 @@ buildscript {
 }
 
 plugins {
-    id 'com.android.application' version '7.2.0' apply false
-    id 'com.android.library' version '7.2.0' apply false
+    id 'com.android.application' version '7.2.1' apply false
+    id 'com.android.library' version '7.2.1' apply false
     id 'org.jetbrains.kotlin.android' version '1.6.21' apply false
     id "io.gitlab.arturbosch.detekt" version "1.17.1"
 
