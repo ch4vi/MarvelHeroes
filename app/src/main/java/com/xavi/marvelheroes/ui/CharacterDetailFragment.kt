@@ -14,8 +14,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.xavi.marvelheroes.R
 import com.xavi.marvelheroes.databinding.FragmentCharacterDetailBinding
 import com.xavi.marvelheroes.domain.model.CharacterDomainModel
-import com.xavi.marvelheroes.domain.model.Failure
+import com.xavi.marvelheroes.presentation.CharacterDetailEvent
+import com.xavi.marvelheroes.presentation.CharacterDetailViewModel
+import com.xavi.marvelheroes.presentation.CharacterDetailViewState
+import com.xavi.marvelheroes.presentation.utils.EventObserver
 import com.xavi.marvelheroes.ui.utils.getMessage
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CharacterDetailFragment : Fragment() {
 
@@ -24,8 +28,9 @@ class CharacterDetailFragment : Fragment() {
     }
 
     private var binding: FragmentCharacterDetailBinding? = null
+    private val viewModel: CharacterDetailViewModel by viewModel()
 
-    private fun getCharacter(): CharacterDomainModel? = arguments?.getParcelable(ARG_CHARACTER)
+    private fun getArgCharacter(): CharacterDomainModel? = arguments?.getParcelable(ARG_CHARACTER)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,19 +38,37 @@ class CharacterDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         return (
-            binding ?: run {
-                val binding = FragmentCharacterDetailBinding.inflate(layoutInflater)
-                this.binding = binding
-                binding
-            }
-            ).root
+                binding ?: run {
+                    val binding = FragmentCharacterDetailBinding.inflate(layoutInflater)
+                    this.binding = binding
+                    binding
+                }
+                ).root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getCharacter()?.let {
+        observeViewModel()
+        dispatchGetData()
+    }
+
+    private fun observeViewModel() {
+        viewModel.viewState.observe(viewLifecycleOwner, EventObserver { resolveState(it) })
+    }
+
+    private fun dispatchGetData() {
+        getArgCharacter()?.let {
             initUI(it)
-        } ?: showFailure(Failure.GenericError("character not found"))
+            viewModel.dispatch(CharacterDetailEvent.GetCharacter(it.id))
+        }
+    }
+
+    private fun resolveState(state: CharacterDetailViewState) {
+        when (state) {
+            is CharacterDetailViewState.ShowData -> initUI(state.data)
+            is CharacterDetailViewState.OnFailure -> showFailure(state.error)
+            CharacterDetailViewState.OnNotFound -> showCharacterNotFound()
+        }
     }
 
     private fun initUI(character: CharacterDomainModel) {
@@ -58,6 +81,15 @@ class CharacterDetailFragment : Fragment() {
 
             detailCharacterName.text = character.name
             detailCharacterDescription.text = character.description
+        }
+    }
+
+    private fun showCharacterNotFound() {
+        binding?.apply {
+            Snackbar.make(root, R.string.app_error_character_not_found, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.app_global_retry) {
+                    findNavController().navigateUp()
+                }.show()
         }
     }
 
