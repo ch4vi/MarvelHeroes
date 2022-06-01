@@ -6,6 +6,7 @@ import com.squareup.moshi.JsonClass
 
 sealed class Failure(reason: String? = null) : Throwable(reason) {
     object NetworkError : Failure()
+    object NotFound : Failure()
     class Unexpected(reason: String? = null) : Failure(reason)
     class MalformedError(reason: String? = null) : Failure(reason)
     class GenericError(reason: String? = null) : Failure(reason)

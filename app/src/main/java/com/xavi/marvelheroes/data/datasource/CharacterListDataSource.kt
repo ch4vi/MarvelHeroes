@@ -18,7 +18,7 @@ import com.xavi.marvelheroes.data.model.CharacterDTO
 import com.xavi.marvelheroes.data.model.MarvelResponseDTO
 import com.xavi.marvelheroes.domain.model.CharacterDomainModel
 import com.xavi.marvelheroes.domain.model.CharactersDomainModel
-import com.xavi.marvelheroes.domain.repository.CharacterRepository
+import com.xavi.marvelheroes.domain.repository.CharacterListRepository
 import com.xavi.marvelheroes.domain.utils.DBMapper
 import com.xavi.marvelheroes.domain.utils.Mapper
 import com.xavi.marvelheroes.domain.utils.NetworkClient
@@ -31,12 +31,12 @@ import retrofit2.Retrofit
 
 @Suppress("OPT_IN_IS_NOT_ENABLED")
 @OptIn(ExperimentalPagingApi::class)
-class CharacterRepositoryImp(
+class CharacterListRepositoryImp(
     private val client: NetworkClient<Retrofit>,
     private val db: AppDatabase,
     private val apiMapper: Mapper<CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>,
     private val dbMapper: DBMapper<CharacterDomainModel, CharacterDB>,
-) : CharacterRepository,
+) : CharacterListRepository,
     RetrofitRepository<CharacterListService, CharactersDomainModel, MarvelResponseDTO<CharacterDTO>> {
 
     override fun getCharacterList(pagingConfig: PagingConfig): Flow<PagingData<CharacterDomainModel>> {
@@ -74,10 +74,10 @@ class CharacterListDataSource(
     private val mapper: Mapper<CharactersDomainModel, MarvelResponseDTO<CharacterDTO>>,
     private val queryName: String?,
 ) : RetrofitPagedSource<
-    CharacterListService,
-    CharacterDomainModel,
-    CharactersDomainModel,
-    MarvelResponseDTO<CharacterDTO>>() {
+        CharacterListService,
+        CharacterDomainModel,
+        CharactersDomainModel,
+        MarvelResponseDTO<CharacterDTO>>() {
 
     override val networkClient = client
 
@@ -142,12 +142,10 @@ data class RequestParams(
     val queryName: String? = null
 )
 
-fun previous(current: Int, limit: Int = DEFAULT_LIMIT): Int? {
-    return if (current == INITIAL_OFFSET) null else Integer.max(current - limit, INITIAL_OFFSET)
-}
+fun previous(current: Int, limit: Int = DEFAULT_LIMIT) =
+    if (current == INITIAL_OFFSET) null
+    else Integer.max(current - limit, INITIAL_OFFSET)
 
-fun next(current: Int, limit: Int = DEFAULT_LIMIT): Int {
-    return current + limit
-}
+fun next(current: Int, limit: Int = DEFAULT_LIMIT) = current + limit
 
 // endregion
