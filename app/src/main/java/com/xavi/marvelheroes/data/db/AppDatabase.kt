@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [CharacterDB::class, PageDB::class],
+    entities = [CharacterDB::class, PageDB::class, LastUpdateDB::class],
     version = 1,
     exportSchema = false
 )
@@ -15,4 +15,5 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun characterDao(): CharacterDao
     abstract fun pageDao(): PageDao
+    abstract fun lastUpdate(): LastUpdateDao
 }
