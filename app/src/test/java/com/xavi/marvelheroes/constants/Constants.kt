@@ -1,5 +1,6 @@
 package com.xavi.marvelheroes.constants
 
+import com.xavi.marvelheroes.data.db.CharacterDB
 import com.xavi.marvelheroes.data.model.CharacterDTO
 import com.xavi.marvelheroes.data.model.MarvelResponseDTO
 import com.xavi.marvelheroes.data.model.PageDTO
@@ -32,6 +33,13 @@ val character = CharacterDomainModel(
     thumbnail = "foo.bar"
 )
 
+val characterDB = CharacterDB(
+    id = "foo",
+    name = "bar",
+    description = "foobar",
+    thumbnail = "foo.bar"
+)
+
 val otherCharacterDTO = CharacterDTO(
     id = "foz",
     name = "baz",
@@ -40,6 +48,13 @@ val otherCharacterDTO = CharacterDTO(
 )
 
 val otherCharacter = CharacterDomainModel(
+    id = "foz",
+    name = "baz",
+    description = "foobar",
+    thumbnail = "baz.foz"
+)
+
+val otherCharacterDB = CharacterDB(
     id = "foz",
     name = "baz",
     description = "foobar",
